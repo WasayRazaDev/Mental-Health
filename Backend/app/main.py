@@ -9,7 +9,12 @@ from app.api.v1.routes_therapists import router as therapists_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        import sys
+        print(f"CRITICAL DATABASE CONNECTION ERROR: {e}", file=sys.stderr)
+        raise e
     yield
     # Shutdown
     
